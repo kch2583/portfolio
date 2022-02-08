@@ -5,6 +5,7 @@
   "scripts": {
     "serve": "vue-cli-service serve --watch",
     "build": "vue-cli-service build --watch",
+    "dev": "webpack-dev-server --mode development",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
@@ -24,7 +25,9 @@
     "sass-loader": "^10.0.0",
     "vue-cli-plugin-vuetify": "~2.4.3",
     "vue-template-compiler": "^2.6.11",
-    "vuetify-loader": "^1.7.0"
+    "vuetify-loader": "^1.7.0",
+    "webpack-cli": "^4.9.1",
+    "webpack-dev-server": "^4.7.3"
   },
   "eslintConfig": {
     "root": true,
@@ -32,17 +35,31 @@
       "node": true
     },
     "extends": [
-      "plugin:vue/essential",
+      "plugin:vue/recommended",
       "eslint:recommended"
     ],
     "parserOptions": {
       "parser": "babel-eslint"
     },
-    "rules": {}
-  },
-  "browserslist": [
-    "> 1%",
-    "last 2 versions",
-    "not dead"
-  ]
+    "rules": {
+      "vue/html-closing-bracket-newline": [
+        "error",
+        {
+          "singleline": "never",
+          "multiline": "always",
+          "ignoreWhenNoAttributes": false,
+          "ignoreWhenEmpty": false,
+          "ignores": [
+            "pre",
+            "textarea"
+          ]
+        }
+      ]
+    },
+    "browserslist": [
+      "> 1%",
+      "last 2 versions",
+      "not dead"
+    ]
+  }
 }
