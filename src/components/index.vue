@@ -6,10 +6,15 @@
       </v-col>
       <v-col cols="4"
         ><router-link :to="{ name: 'Stock' }"
-          ><v-btn color="success">Stock </v-btn></router-link
+          ><v-btn color="success">Stock</v-btn></router-link
         >
       </v-col>
-      <v-col cols="4"><v-btn color="success">p5.js xs </v-btn> </v-col>
+      <v-col cols="4"
+        ><router-link :to="{ name: 'p5' }"
+          ><v-btn color="success">p5.js</v-btn></router-link
+        >
+      </v-col>
+
       <v-col cols="4"><v-btn color="success">Health</v-btn> </v-col>
       <v-col cols="4"><v-btn color="success">Health</v-btn> </v-col>
     </v-row>

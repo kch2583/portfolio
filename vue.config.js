@@ -1,8 +1,8 @@
-const path = require("path");
 module.exports = {
   transpileDependencies: ["vuetify"],
   lintOnSave: false,
   devServer: {
+    historyApiFallback: true,
     proxy: {
       "/api": {
         target: "http://localhost:3000/api",
