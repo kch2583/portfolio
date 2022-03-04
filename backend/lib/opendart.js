@@ -100,14 +100,4 @@ function fnlttSinglAcnt(corp_code, bsns_year, reprt_code) {
   return result;
 }
 
-//고유번호
-function document() {
-  var result = opendart.disclosure
-    .document(accessToken, "/document.xml", options)
-    .then(function (res) {
-      console.log(res.data);
-    });
-  return result;
-}
-
-module.exports = { company, list, fnlttSinglAcnt, document };
+module.exports = { company, list, fnlttSinglAcnt };
