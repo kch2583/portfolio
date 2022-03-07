@@ -20,7 +20,16 @@
             >단일회사 주요계정
           </v-btn>
         </v-col>
+        <v-col>
+          <v-btn color="success" @click="getfnlttSinlgAcntFirebase()"
+            >22222단일회사 주요계정22222
+          </v-btn>
+        </v-col>
+        <v-col>
+          <v-btn color="success" @click="readMongodb()">몽고디비 읽기 </v-btn>
+        </v-col>
         <v-col> <v-btn color="success">다중회사 주요계정 </v-btn> </v-col>
+
         <v-col> <v-btn color="success">단일회사 전체 재무제표 </v-btn> </v-col>
         <v-col>
           <v-btn color="success">XBRL 택사노미재무제표양식</v-btn>
@@ -91,15 +100,37 @@ export default {
       });
     },
     getfnlttSinlgAcnt() {
-      this.$http.get("/api/stock/fnlttSinglAcnt").then((response) => {
-        this.stocks = response.data;
-      });
+      this.$http
+        .post("/api/stock/fnlttSinglAcnt", {
+          corp_code: "01391103",
+          bsns_year: "2021",
+          reprt_code: "11012",
+        })
+        .then((response) => {
+          this.stocks = response.data;
+        });
     },
     getDocument() {
       this.$http.get("/api/stock/document").then((response) => {
         // var xml = response.data;
         // var json = convert.xml2json(xml, { compact: true });
         // this.stocks = JSON.parse(json);
+        this.stocks = response.data;
+      });
+    },
+    getfnlttSinlgAcntFirebase() {
+      this.$http
+        .post("/api/stock/mongodbcreate", {
+          name: "mike",
+          email: "ddjfje@jfje.com",
+          password: "123456",
+        })
+        .then((response) => {
+          this.stocks = response.data;
+        });
+    },
+    readMongodb() {
+      this.$http.get("/api/stock/mongodbread").then((response) => {
         this.stocks = response.data;
       });
     },

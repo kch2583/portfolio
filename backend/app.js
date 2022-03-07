@@ -23,6 +23,10 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/", indexRouter);
 app.use("/api/stock", stockRouter);
+var mongoose = require("mongoose");
+mongoose.connect(
+  "mongodb+srv://chanhee:kimchan8855@cluster0.1ay2j.mongodb.net/opendart?retryWrites=true&w=majority"
+);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

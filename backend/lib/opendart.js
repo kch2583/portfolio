@@ -100,4 +100,20 @@ function fnlttSinglAcnt(corp_code, bsns_year, reprt_code) {
   return result;
 }
 
-module.exports = { company, list, fnlttSinglAcnt };
+// 단일회사 전체 재무제표
+function fnlttSinglAcntAll(corp_code, bsns_year, reprt_code, fs_div) {
+  var options = {
+    corp_code: corp_code,
+    bsns_year: bsns_year,
+    reprt_code: reprt_code,
+    fs_div: fs_div,
+  };
+  var result = opendart.statement
+    .fnlttSinglAcntAll(accessToken, options)
+    .then(function (res) {
+      return res.data;
+    });
+  return result;
+}
+
+module.exports = { company, list, fnlttSinglAcnt, fnlttSinglAcntAll };
