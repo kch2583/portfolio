@@ -30,7 +30,11 @@
         </v-col>
         <v-col> <v-btn color="success">다중회사 주요계정 </v-btn> </v-col>
 
-        <v-col> <v-btn color="success">단일회사 전체 재무제표 </v-btn> </v-col>
+        <v-col>
+          <v-btn color="success" @click="getfnlttSinlgAcntAll()"
+            >단일회사 전체 재무제표
+          </v-btn>
+        </v-col>
         <v-col>
           <v-btn color="success">XBRL 택사노미재무제표양식</v-btn>
         </v-col>
@@ -80,17 +84,56 @@
           </div>
         </v-col>
       </v-row>
+
+      <!-- <v-row>
+        <v-col>
+          <v-simple-table>
+            <template v-slot:default>
+              <thead>
+                <tr>
+                  <th>sj_div</th>
+                  <th>sj_nm</th>
+                  <th>account_nm</th>
+                  <th>thstrm_amount</th>
+                  <th>thstrm_add_amount</th>
+                </tr>
+              </thead>
+              <tbody v-for="data in lists" :key="data.id">
+                <tr v-for="d in data" :key="d.id">
+                  <td>{{ d.sj_div }}</td>
+                  <td>{{ d.sj_nm }}</td>
+                  <td>{{ d.account_nm }}</td>
+                  <td>{{ d.thstrm_amount }}</td>
+                  <td>
+                    {{ d.thstrm_add_amount }}
+                  </td>
+                </tr>
+              </tbody>
+            </template>
+          </v-simple-table>
+        </v-col>
+      </v-row> -->
     </v-container>
   </div>
 </template>
 
 <script>
 export default {
-  created() {},
+  mounted() {
+    // this.$http.get("/api/stock").then((response) => {
+    //   this.fnlData = response.data;
+    //   for (let index = 0; index < this.fnlData.length; index++) {
+    //     this.lists.push(response.data[index].list);
+    //   }
+    // });
+  },
   data() {
     return {
-      stocks: {},
+      stocks: [],
       dialog: false,
+      fnlData: {},
+      headers: [],
+      lists: [],
     };
   },
   methods: {
@@ -99,12 +142,26 @@ export default {
         this.stocks = response.data;
       });
     },
+    //단일회사 주요계정
     getfnlttSinlgAcnt() {
       this.$http
         .post("/api/stock/fnlttSinglAcnt", {
           corp_code: "01391103",
           bsns_year: "2021",
           reprt_code: "11012",
+        })
+        .then((response) => {
+          this.stocks = response.data;
+        });
+    },
+    // 단일회사 전체 재무제표
+    getfnlttSinlgAcntAll() {
+      this.$http
+        .post("/api/stock/fnlttSinglAcntAll", {
+          corp_code: "01391103",
+          bsns_year: "2020",
+          reprt_code: "11011",
+          fs_div: "CFS",
         })
         .then((response) => {
           this.stocks = response.data;

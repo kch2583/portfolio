@@ -7,6 +7,7 @@ var history = require("connect-history-api-fallback");
 
 var indexRouter = require("./routes/index");
 var stockRouter = require("./routes/stock");
+var healthRouter = require("./routes/health");
 
 var app = express();
 
@@ -23,6 +24,8 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/", indexRouter);
 app.use("/api/stock", stockRouter);
+app.use("/api/health", healthRouter);
+
 var mongoose = require("mongoose");
 mongoose.connect(
   "mongodb+srv://chanhee:kimchan8855@cluster0.1ay2j.mongodb.net/opendart?retryWrites=true&w=majority"
