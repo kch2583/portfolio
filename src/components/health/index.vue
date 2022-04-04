@@ -1,6 +1,7 @@
 <template>
   <v-container>
-    <weight />
+    <!-- <weight /> -->
+    <diet />
     <v-row> </v-row>
   </v-container>
 </template>
@@ -9,7 +10,7 @@
 import weight from "./weight.vue";
 import diet from "./diet.vue";
 export default {
-  components: { weight },
+  components: { weight, diet },
 
   data: () => ({}),
   watch: {},

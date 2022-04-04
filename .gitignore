@@ -1,7 +1,7 @@
 .DS_Store
 node_modules
 /dist
-
+/Users/ch/development/portfolio/my-portfolio-102b1-firebase-adminsdk-n8220-31f2b21a09.json
 
 # local env files
 .env.local

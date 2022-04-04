@@ -6,17 +6,17 @@
         <canvas ref="lineChart" id="canvas" />
       </v-col>
       <v-col cols="12" md="4">
-        <v-form ref="form" lazy-validation @submit.prevent="saveWeight">
+        <v-form ref="form" lazy-validation>
           <v-card>
             <v-card-title> 몸무게 입력 </v-card-title>
             <v-card-text>
               <v-date-picker
                 full-width
                 v-model="date"
-                class="mt-4"
+                class="mt-4 rounded-xl"
                 :max="new Date().toISOString().slice(0, 10)"
                 elevation="3"
-                show-adjacent-months
+                scrollable
                 :events="arrayEvents"
                 event-color="green lighten-1"
               ></v-date-picker>
@@ -57,7 +57,7 @@ export default {
       labels: [],
       datasets: [
         {
-          label: "# 몸무게",
+          label: "몸무게",
           data: [],
           borderColor: "rgb(75, 192, 192)",
           borderWidth: 3,
