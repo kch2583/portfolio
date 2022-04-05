@@ -14,7 +14,7 @@ const {
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const { getStorage } = require("firebase-admin/storage");
+const { getStorage, ref, uploadBytes } = require("firebase-admin/storage");
 // const {  } = require("firebase-admin/database");
 var admin = require("firebase-admin");
 
@@ -35,13 +35,6 @@ const firebaseConfig = {
   measurementId: "G-Q5KDKDVH6E",
   credential: admin.credential.cert(serviceAccount),
 };
-
-// const app = initializeApp(firebaseConfig);
-
-// const db = getFirestore(app);
-// const storage = getStorage();
-
-// module.exports = { db, storage }
 
 const app = initializeApp(firebaseConfig);
 

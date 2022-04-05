@@ -73,6 +73,8 @@
                     no-resize
                     background-color="amber lighten-4"
                     rounded
+                    name="memo"
+                    v-model="memo"
                     :value="memo"
                   >
                   </v-textarea>
@@ -132,14 +134,27 @@ export default {
         this.text = "식사 이미지를 선택해주세요.";
         return;
       }
+      var formData = new FormData();
+      formData.append("date", this.date);
+      formData.append("meal", this.selection);
+      formData.append("image", this.currentImage);
+      formData.append("memo", this.memo);
 
       this.$http
-        .post("/api/health/saveMeal", {
-          date: this.date,
-          meal: this.selection,
-          image: this.currentImage,
-          memo: this.memo,
-        })
+        .post(
+          "/api/health/saveMeal",
+
+          // date: this.date,
+          // meal: this.selection,
+          // image: this.currentImage,
+          // memo: this.memo,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        )
         .then((response) => {
           this.$refs.mealForm.reset();
         });

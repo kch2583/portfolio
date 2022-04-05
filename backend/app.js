@@ -4,6 +4,7 @@ var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 var history = require("connect-history-api-fallback");
+var bodyParser = require("body-parser");
 
 var indexRouter = require("./routes/index");
 var stockRouter = require("./routes/stock");
