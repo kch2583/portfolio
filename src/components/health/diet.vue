@@ -19,7 +19,7 @@
                     elevation="3"
                     scrollable
                     :events="dietEvents"
-                    event-color="blue"
+                    :event-color="getEventColor"
                   ></v-date-picker>
                 </v-card-text>
               </v-col>
@@ -85,6 +85,16 @@
               </v-col>
             </v-row>
           </v-form>
+          <v-card-text>
+            <v-img
+              v-for="(src, index) in images"
+              :key="index"
+              :src="src[0]"
+              aspect-ratio="1"
+              class="rounded-xl"
+              width="100px"
+            ></v-img>
+          </v-card-text>
         </v-card>
       </v-col>
     </v-row>
@@ -96,7 +106,7 @@ export default {
     currentImage: undefined,
     previewImage: undefined,
     data: [],
-    dietEvents: ["22.03.02"],
+    dietEvents: {},
     date: new Date().toISOString().slice(0, 10),
     meals: ["아침", "아점", "점심", "점저", "저녁", "야식", "간식", "보충제"],
     memo: "",
@@ -105,13 +115,27 @@ export default {
     snackbar: false,
     text: "My timeout is set to 2000.",
     timeout: 2000,
+    colors: {
+      아침: "#f54c4c",
+      아점: "#f7a960",
+      점심: "#f7eb60",
+      점저: "#4e8dcc",
+      저녁: "#534bbd",
+      야식: "#252126",
+      간식: "#6dcc4e",
+      보충제: "#c2c2cc",
+    },
+    images: [],
   }),
   created() {
-    this.showMeal();
+    this.showMealEvent();
   },
   watch: {
     currentImage: function () {
       this.preview_image();
+    },
+    date: function () {
+      this.showMealImages();
     },
   },
   methods: {
@@ -122,6 +146,9 @@ export default {
       }
       this.previewImage = URL.createObjectURL(this.currentImage);
       this.loading = !this.loading;
+    },
+    getEventColor(meal) {
+      return colors[meal];
     },
     saveMeal() {
       if (!this.selection) {
@@ -141,30 +168,44 @@ export default {
       formData.append("memo", this.memo);
 
       this.$http
-        .post(
-          "/api/health/saveMeal",
-
-          // date: this.date,
-          // meal: this.selection,
-          // image: this.currentImage,
-          // memo: this.memo,
-          formData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        )
+        .post("/api/health/saveMeal", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
         .then((response) => {
           this.$refs.mealForm.reset();
         });
     },
-    showMeal() {
-      // this.$http.get("/api/health/meal").then((response) => {
-      //   this.data = response.data;
-      // });
+    showMealEvent() {
+      this.$http.get("/api/health/showMealEvent").then((response) => {
+        // this.dietEvents = response.data.date;
+        for (let index = 0; index < response.data.date.length; index++) {
+          var mealArr = Object.keys(response.data.result[index]); // 한 날짜의 식단 종류
+          var resultColors = [];
+          mealArr.forEach((meal) => {
+            resultColors.push(this.colors[meal]);
+          });
+          this.dietEvents[response.data.date[index]] = resultColors;
+        }
+        this.data = response.data.result;
+      });
+    },
+    showMealImages() {
+      this.$http
+        .post("/api/health/showMealImages", { selectedDate: this.date })
+        .then((response) => {
+          this.images = response.data;
+          console.log(response.data);
+        });
     },
   },
 };
 </script>
-<style lang=""></style>
+<style lang="css">
+.v-date-picker-table__events div {
+  margin: 1px;
+  height: 5px;
+  width: 5px;
+}
+</style>
