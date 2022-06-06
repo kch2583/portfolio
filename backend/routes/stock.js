@@ -23,12 +23,33 @@ const FnlttSinglAcntAll = require("../db/fnlttSinglAcntAll");
 //   });
 
 router.get(
-  "/",
+  "/getCorpNameList",
   catchErrors(async (req, res, next) => {
     // var result = await FnlttSinglAcntAll.find({
     //   corp_code: "01391103",
     // });
     // res.send(result);
+    var result = [];
+    var findAllCorpName = await CorpCode.find(
+      {},
+      { _id: 0, corp_name: 1, corp_code: 1 }
+    ).sort({ corp_name: 1 });
+    for (const i of findAllCorpName) {
+      result.push(i);
+    }
+
+    res.send(result);
+  })
+);
+
+router.get(
+  "/",
+  catchErrors(async (req, res, next) => {
+    var result = await FnlttSinglAcnt.find({
+      stock_code: "337930",
+    });
+
+    res.send(result);
   })
 );
 
@@ -43,7 +64,21 @@ router.get(
   })
 );
 
-// 단일회사 주요계정
+router.post(
+  "/getFnlttSinglAcnt",
+  catchErrors(async (req, res, next) => {
+    // var findCode = await CorpCode.findOne({ corp_code: req.body.corp_code });
+    var result = await opendartLib.fnlttSinglAcnt(
+      req.body.corp_code,
+      req.body.bsns_year,
+      req.body.reprt_code
+    );
+
+    res.send(result);
+  })
+);
+
+// 단일회사 주요계정 저장
 router.post(
   "/fnlttSinglAcnt",
   catchErrors(async (req, res, next) => {
@@ -107,8 +142,6 @@ router.post(
 router.post(
   "/fnlttSinglAcntAll",
   catchErrors(async (req, res, next) => {
-    var array1 = [];
-
     // 찾은 주요계정이 mongodb에 이미 저장되어있는지 알아보기
     var findData = await FnlttSinglAcntAll.find({
       corp_code: req.body.corp_code,
@@ -123,52 +156,74 @@ router.post(
         req.body.corp_code,
         req.body.bsns_year,
         req.body.reprt_code,
-        req.body.fs_div
+        "OFS"
       );
 
       if (result.status == "000") {
         var result2 = {};
-        var list1 = [];
-        var asdf = [
-          "sj_div",
-          "sj_nm",
-          "account_id",
-          "account_nm",
-          "account_detail",
-          "thstrm_nm",
-          "thstrm_amount",
-          "thstrm_add_amount",
-          "ord",
-        ];
 
         for (let index = 0; index < 4; index++) {
           result2[Object.keys(result.list[0])[index]] = Object.values(
             result.list[0]
           )[index];
         }
-        console.log(result2);
+
+        var bs = [];
+        var is = [];
+        var cis = [];
+        var cf = [];
+        var sce = [];
+        let tempList = [];
 
         for (let index = 0; index < result.list.length; index++) {
-          var object2 = {};
-          for (let i = 4; i < Object.keys(result.list[index]).length; i++) {
-            var findKey = asdf.includes(Object.keys(result.list[index])[i]);
-            if (findKey) {
-              object2[Object.keys(result.list[index])[i]] = Object.values(
-                result.list[index]
-              )[i];
-            }
+          tempList.push({
+            account_id: result.list[index].account_id,
+            account_nm: result.list[index].account_nm,
+            account_detail: result.list[index].account_detail,
+            thstrm_nm: result.list[index].thstrm_nm,
+            thstrm_amount: result.list[index].thstrm_amount,
+            ord: result.list[index].ord,
+          });
+
+          var obj4 = {
+            account_id: result.list[index].account_id,
+            account_nm: result.list[index].account_nm,
+            account_detail: result.list[index].account_detail,
+            thstrm_nm: result.list[index].thstrm_nm,
+            thstrm_amount: result.list[index].thstrm_amount,
+            ord: result.list[index].ord,
+          };
+
+          switch (result.list[index].sj_div) {
+            case "BS": //재무상태표
+              bs.push(obj4);
+              continue;
+            case "IS": //손익계산서
+              is.push(obj4);
+              continue;
+            case "CIS": //포괄손익계산서
+              cis.push(obj4);
+              continue;
+            case "CF": //현금흐름표
+              cf.push(obj4);
+              continue;
+            case "SCE": //자본변동표
+              sce.push(obj4);
+              continue;
+            default:
+              continue;
           }
-          list1.push(object2);
         }
-
-        result2["list"] = list1;
-
         await FnlttSinglAcntAll.create({
           rcept_no: result2.rcept_no,
           reprt_code: result2.reprt_code,
           bsns_year: result2.bsns_year,
           corp_code: result2.corp_code,
-          list: result2.list,
+          bs: bs,
+          is: is,
+          cis: cis,
+          cf: cf,
+          sce: sce,
         });
         res.send("정상적으로 저장되었습니다.");
       } else {

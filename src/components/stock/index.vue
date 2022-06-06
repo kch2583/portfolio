@@ -1,6 +1,24 @@
 <template>
   <div>
-    <v-container grid-list-xs>
+    <!-- // stock 메인 화면 이미지 -->
+    <v-container fluid fill-height>
+      <v-row>
+        <v-img
+          :src="require('/src/assets/stock_images/stock-g039ad4bb1_1920.jpg')"
+          :height="windowSize.y"
+        >
+          <v-container fill-height>
+            <v-row align="center" justify="center">
+              <p class="white--text text-center text-h1">Stock Analysis Page</p>
+            </v-row>
+          </v-container>
+        </v-img>
+      </v-row>
+    </v-container>
+    <stockDataTable />
+    <v-container>
+      1mEyUz08F8OrQ5DLaOszo_MtOjhwo_jxBGzZDH0-g_DM
+      1mEyUz08F8OrQ5DLaOszo_MtOjhwo_jxBGzZDH0-g_DM
       <v-row>
         <v-col>
           <v-btn color="success" @click="getList()"> 공시검색 </v-btn>
@@ -16,7 +34,7 @@
 
         <v-col> <v-btn color="success"> 증자(감자)현황 </v-btn> </v-col>
         <v-col>
-          <v-btn color="success" @click="getfnlttSinlgAcnt()"
+          <v-btn color="success" @click="saveFnlttSinlgAcnt()"
             >단일회사 주요계정
           </v-btn>
         </v-col>
@@ -85,65 +103,149 @@
         </v-col>
       </v-row>
 
-      <!-- <v-row>
+      <v-row>
         <v-col>
           <v-simple-table>
             <template v-slot:default>
               <thead>
-                <tr>
-                  <th>sj_div</th>
-                  <th>sj_nm</th>
-                  <th>account_nm</th>
-                  <th>thstrm_amount</th>
-                  <th>thstrm_add_amount</th>
-                </tr>
+                <th>목록</th>
+                <th>정보</th>
               </thead>
-              <tbody v-for="data in lists" :key="data.id">
-                <tr v-for="d in data" :key="d.id">
-                  <td>{{ d.sj_div }}</td>
-                  <td>{{ d.sj_nm }}</td>
-                  <td>{{ d.account_nm }}</td>
-                  <td>{{ d.thstrm_amount }}</td>
-                  <td>
-                    {{ d.thstrm_add_amount }}
-                  </td>
-                </tr>
-              </tbody>
+              <!-- <tbody v-for="([key, value], i) of fnlData" :key="i">
+                <td>{{ key }}</td>
+                <td>{{ value }}</td>
+              </tbody> -->
+              <v-divider></v-divider>
             </template>
           </v-simple-table>
         </v-col>
-      </v-row> -->
+        <v-col>
+          자기자본비율 :
+          {{ equityRatio }} ->
+
+          <v-icon
+            :color="
+              equityRatio > 55 ? 'green' : equityRatio > 45 ? 'yellow' : 'red'
+            "
+          >
+            {{
+              equityRatio > 55
+                ? "mdi-emoticon-happy"
+                : equityRatio > 45
+                ? "mdi-emoticon-neutral"
+                : "mdi-emoticon-angry"
+            }}
+          </v-icon>
+        </v-col>
+        <v-col>
+          부채비율 : {{ debtRatio }} ->
+          <v-icon
+            :color="
+              debtRatio < 100 ? 'green' : debtRatio < 150 ? 'yellow' : 'red'
+            "
+          >
+            {{
+              100 > debtRatio
+                ? "mdi-emoticon-happy"
+                : 150 > debtRatio
+                ? "mdi-emoticon-neutral"
+                : "mdi-emoticon-angry"
+            }}
+          </v-icon></v-col
+        >
+        <v-col
+          >영업이익 : {{ operatingIncome.toLocaleString("ko-KR") }} ->
+
+          <v-icon :color="operatingIncome > 0 ? 'green' : 'red'">
+            {{
+              operatingIncome > 0 ? "mdi-emoticon-happy" : "mdi-emoticon-angry"
+            }}
+          </v-icon>
+        </v-col>
+        <v-col v-if="operatingIncome">
+          영업이익, 당기순이익 차이
+          {{ (operatingIncome - netIncome).toLocaleString("ko-KR") }}
+
+          <v-icon :color="operatingIncome > netIncome ? 'yellow' : 'red'">
+            {{
+              operatingIncome > netIncome
+                ? "mdi-emoticon-neutral"
+                : "mdi-emoticon-angry"
+            }}
+          </v-icon></v-col
+        >
+        <v-col>
+          {{ fnlData }}
+        </v-col>
+      </v-row>
+      <!-- <corpCode /> -->
     </v-container>
   </div>
 </template>
 
 <script>
+import corpCode from "./corpCode.vue";
+import stockDataTable from "./stockDataTable.vue";
 export default {
+  components: {
+    corpCode,
+    stockDataTable,
+  },
   mounted() {
+    this.onResize();
+
     // this.$http.get("/api/stock").then((response) => {
-    //   this.fnlData = response.data;
-    //   for (let index = 0; index < this.fnlData.length; index++) {
-    //     this.lists.push(response.data[index].list);
-    //   }
+    //   this.fnlData = Object.entries(response.data[0]);
+    //   this.fnlData = response.data[0];
+    //   this.equityRatio = (
+    //     (parseInt(this.fnlData.total_stockholders_equity.replace(/\,/g, "")) /
+    //       parseInt(this.fnlData.total_assets.replace(/\,/g, ""))) *
+    //     100
+    //   ).toFixed(2);
+    //   this.debtRatio = (
+    //     (parseInt(this.fnlData.total_liabilities.replace(/\,/g, "")) /
+    //       parseInt(this.fnlData.total_stockholders_equity.replace(/\,/g, ""))) *
+    //     100
+    //   ).toFixed(2);
+    //   this.operatingIncome = parseInt(
+    //     this.fnlData.operating_income.replace(/\,/g, "")
+    //   );
+    //   this.netIncome = parseInt(this.fnlData.net_income.replace(/\,/g, ""));
+
+    // for (let index = 0; index < this.fnlData.length; index++) {
+    //   this.lists.push(response.data[index].list);
+    // }
     // });
   },
   data() {
     return {
-      stocks: [],
+      windowSize: { x: 0, y: 0, mx: 0, my: 0 },
+      netIncome: 0,
+      operatingIncome: 0,
+      debtRatio: 0,
+      equityRatio: 0,
+      result: {},
+      stocks: {},
       dialog: false,
       fnlData: {},
       headers: [],
       lists: [],
     };
   },
+
   methods: {
     getList() {
       this.$http.get("/api/stock/list").then((response) => {
         this.stocks = response.data;
       });
     },
-    //단일회사 주요계정
-    getfnlttSinlgAcnt() {
+    onResize() {
+      this.windowSize = { x: window.innerWidth, y: window.innerHeight };
+      console.log(this.windowSize);
+    },
+
+    //단일회사 주요계정 저장
+    saveFnlttSinlgAcnt() {
       this.$http
         .post("/api/stock/fnlttSinglAcnt", {
           corp_code: "01391103",
@@ -158,8 +260,8 @@ export default {
     getfnlttSinlgAcntAll() {
       this.$http
         .post("/api/stock/fnlttSinglAcntAll", {
-          corp_code: "01391103",
-          bsns_year: "2020",
+          corp_code: "00126380",
+          bsns_year: "2018",
           reprt_code: "11011",
           fs_div: "CFS",
         })

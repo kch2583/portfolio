@@ -4,7 +4,11 @@ var FnlttSinglAcntSchema = new mongoose.Schema({
   reprt_code: String,
   bsns_year: String,
   corp_code: String,
-  list: Array,
+  bs: Array,
+  is: Array,
+  cis: Array,
+  cf: Array,
+  sce: Array,
 });
 mongoose.model("FnlttSinglAcntAll", FnlttSinglAcntSchema);
 module.exports = mongoose.model("FnlttSinglAcntAll");

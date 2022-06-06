@@ -68,6 +68,16 @@
           ><v-btn color="success">Health</v-btn></router-link
         >
       </v-col>
+      <v-col cols="4"
+        ><router-link :to="{ name: 'Climbing' }"
+          ><v-btn color="success">Climbing</v-btn></router-link
+        >
+      </v-col>
+      <v-col cols="4"
+        ><router-link :to="{ path: '/coding' }"
+          ><v-btn color="success">Coding</v-btn></router-link
+        >
+      </v-col>
     </v-row>
   </v-container>
 </template>

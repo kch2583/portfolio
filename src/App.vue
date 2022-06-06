@@ -31,8 +31,12 @@ export default {
   font-style: normal;
 }
 #app {
-  font-family: "BMJUA";
+  font-family: "BMJUA" !important;
+  * {
+    font-family: "BMJUA" !important;
+  }
 }
-// $body-font-family: "BMJUA";
-// $heading-font-family: "BMJUA";
+
+$body-font-family: "BMJUA" !important;
+$heading-font-family: "BMJUA" !important;
 </style>

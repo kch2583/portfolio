@@ -22,6 +22,24 @@
                     :event-color="getEventColor"
                   ></v-date-picker>
                 </v-card-text>
+
+                <v-card-text>
+                  <v-row>
+                    <v-col
+                      cols="4"
+                      class="d-flex child-flex"
+                      v-for="(src, index) in images"
+                      :key="index"
+                    >
+                      <v-img
+                        :src="src[0]"
+                        aspect-ratio="1"
+                        class="rounded-xl"
+                        width="100px"
+                      ></v-img>
+                    </v-col>
+                  </v-row>
+                </v-card-text>
               </v-col>
               <v-col cols="6">
                 <v-card-text>
@@ -85,16 +103,6 @@
               </v-col>
             </v-row>
           </v-form>
-          <v-card-text>
-            <v-img
-              v-for="(src, index) in images"
-              :key="index"
-              :src="src[0]"
-              aspect-ratio="1"
-              class="rounded-xl"
-              width="100px"
-            ></v-img>
-          </v-card-text>
         </v-card>
       </v-col>
     </v-row>

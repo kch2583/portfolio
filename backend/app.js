@@ -4,11 +4,11 @@ var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 var history = require("connect-history-api-fallback");
-var bodyParser = require("body-parser");
 
 var indexRouter = require("./routes/index");
 var stockRouter = require("./routes/stock");
 var healthRouter = require("./routes/health");
+var codingRouter = require("./routes/coding");
 
 var app = express();
 
@@ -26,6 +26,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/", indexRouter);
 app.use("/api/stock", stockRouter);
 app.use("/api/health", healthRouter);
+app.use("/api/coding", codingRouter);
 
 var mongoose = require("mongoose");
 mongoose.connect(

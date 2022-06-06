@@ -1,6 +1,12 @@
 module.exports = {
   transpileDependencies: ["vuetify"],
   lintOnSave: false,
+  configureWebpack: {
+    module: {
+      rules: [{ test: /\.MOV/, use: "raw-loader" }],
+    },
+  },
+
   devServer: {
     historyApiFallback: true,
     proxy: {
